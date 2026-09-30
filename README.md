@@ -90,18 +90,18 @@ Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat 
 - **Carta Bar Agihan 11 Entiti**: Penarafan pelatih dan perbelanjaan merentas semua anak syarikat dengan fungsi susunan (*sort by headcount / spend*).
 - **Roster Pematuhan & Audit Kewangan**: Jadual semakan audit setiap anak syarikat bersama butang *drill-down* **View Sheet $\rightarrow$** ke Penyata Elaun.
 
-### F09: Pusat Simpanan Link & Dokumen Firebase Cloud
-- Butang **"Link & Dokumen"** pada bar navigasi atas.
-- Menyimpan pautan Google Drive, fail laporan penggajian, pautan portal Maybank Corporate Autopay, dan dokumen statutori terus ke Cloud Firestore.
-- Menyokong simpanan pautan terus pada profil setiap pelatih untuk semakan pantas resume, surat tawaran, atau folder Google Drive.
+### F09: Cloud Links & Documents Repository (Firebase Firestore)
+- Dedicated **"Links & Documents"** button on the primary navigation bar.
+- Stores Google Drive folders, payroll reports, Maybank Corporate Autopay portals, and statutory guidelines directly in Cloud Firestore.
+- Supports individual trainee document links for quick access to resumes, offer letters, or Google Drive evaluation folders.
 
-### F10: Sistem Log Masuk Pengguna Tunggal (HR Internship) & Kawalan Kata Laluan
-- **Akaun Pengguna Sah Tunggal**: Hanya satu pengguna dibenarkan mengakses sistem iaitu **HR Internship** (`Internship@mediaprima.com.my`). Sebarang percubaan menggunakan emel lain akan disekat dengan ralat akses.
-- **Kredensial Rasmi**:
-  - **Emel**: `Internship@mediaprima.com.my`
-  - **Kata Laluan Asal (Default)**: `Internship123`
-- **Fungsi Tukar Kata Laluan (*Change Password*)**: Pengguna boleh menukar kata laluan pada menu profil header dengan memasukkan kata laluan semasa dan kata laluan baharu (minimum 6 aksara).
-- **Fungsi Reset Kata Laluan (*Forgot / Reset Password*)**: Dipautkan secara khusus ke emel rasmi `Internship@mediaprima.com.my`. Menyokong penghantaran pautan e-mel rasmi Firebase Authentication, penetapan semula segera, atau pengaktifan semula kata laluan sandaran lalai.
+### F10: Single-User Authentication (HR Internship) & Password Management
+- **Single Authorized User**: The system strictly restricts access to **HR Internship** (`Internship@mediaprima.com.my`). Any unauthorized email attempts are rejected.
+- **Default Official Credentials**:
+  - **Email**: `Internship@mediaprima.com.my`
+  - **Initial Password**: `Internship123`
+- **Change Password**: Accessible directly from the top header profile dropdown, allowing HR to update their password (minimum 6 characters).
+- **Forgot / Reset Password**: Linked exclusively to the official email `Internship@mediaprima.com.my`, supporting Firebase password reset email delivery, instant password updates, or restoring the official default password.
 
 ---
 

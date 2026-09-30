@@ -127,10 +127,10 @@ export const InternsMasterlistView: React.FC<InternsMasterlistViewProps> = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-tertiary hover:text-primary transition-colors inline-flex items-center gap-0.5 bg-surface-container-high px-1.5 py-0.2 rounded text-[11px] font-medium"
-                              title={`Pautan Fail Cloud: ${intern.documentUrl}`}
+                              title={`Cloud Document Link: ${intern.documentUrl}`}
                             >
                               <span className="material-symbols-outlined text-[13px]">attachment</span>
-                              <span>Pautan Dokumen</span>
+                              <span>Document Link</span>
                             </a>
                           )}
                         </div>

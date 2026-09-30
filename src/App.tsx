@@ -17,6 +17,7 @@ import { RemarksModal } from './components/Modals/RemarksModal';
 import { HelpModal } from './components/Modals/HelpModal';
 import { CloudLinksModal } from './components/Modals/CloudLinksModal';
 import { ChangePasswordModal } from './components/Modals/ChangePasswordModal';
+import { SignOutModal } from './components/Modals/SignOutModal';
 import { LoginPage } from './components/Auth/LoginPage';
 import {
   ensureAuth,
@@ -96,6 +97,7 @@ export default function App() {
   // Authentication state for exclusive HR Internship user
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => !!getHRAuthSession());
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -116,12 +118,15 @@ export default function App() {
     }, 3200);
   };
 
-  const handleLogout = async () => {
-    if (window.confirm('Adakah anda pasti ingin log keluar dari sistem PTAS?')) {
-      await logoutHR();
-      setIsAuthenticated(false);
-      showToast('Log keluar berjaya. Sesi ditamatkan.', 'logout');
-    }
+  const handleLogout = () => {
+    setIsSignOutModalOpen(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    setIsSignOutModalOpen(false);
+    await logoutHR();
+    setIsAuthenticated(false);
+    showToast('Signed out successfully. Session terminated.', 'logout');
   };
 
   // CRUD Handlers with Firestore Persistence
@@ -341,6 +346,12 @@ export default function App() {
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
         showToast={showToast}
+      />
+
+      <SignOutModal
+        isOpen={isSignOutModalOpen}
+        onClose={() => setIsSignOutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
       />
 
       {/* Floating Operational Toast */}

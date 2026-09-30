@@ -131,16 +131,16 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
     if (onSavePayrollLinkToFirebase) {
       const link: CloudLink = {
         id: `link-payroll-${selectedYear}-${selectedMonth}-${selectedEntity}-${Date.now()}`,
-        title: `Penyata Elaun Payroll: ${monthName} ${selectedYear} (${selectedEntity})`,
+        title: `Payroll Allowance Ledger: ${monthName} ${selectedYear} (${selectedEntity})`,
         url: `https://mediaprima-internal.web.app/payroll/${selectedYear}/${selectedMonth}/${selectedEntity}`,
         category: 'Payroll Sheet',
-        description: `Disimpan ke Firebase: RM ${grossApprovedPayout.toLocaleString('en-MY')} bagi ${totalTrainees} pelatih (${releasedCount} released, ${holdCount} on hold).`,
+        description: `Saved to Firebase: RM ${grossApprovedPayout.toLocaleString('en-MY')} for ${totalTrainees} trainees (${releasedCount} released, ${holdCount} on hold).`,
         entityCode: selectedEntity === 'ALL' ? undefined : selectedEntity,
         createdAt: new Date().toISOString(),
         createdBy: 'HR Admin Ops',
       };
       onSavePayrollLinkToFirebase(link);
-      showToast(`Penyata & link payroll ${monthName} ${selectedYear} disimpan ke Firebase!`, 'cloud_done');
+      showToast(`Payroll ledger & link for ${monthName} ${selectedYear} saved to Firebase!`, 'cloud_done');
     }
   };
 
@@ -219,10 +219,10 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
           <button
             onClick={handleSaveBatchLink}
             className="px-3 py-1.5 bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-[12px] rounded-lg transition-colors flex items-center gap-1.5 border border-surface-container-high cursor-pointer"
-            title="Simpan pautan rekod payroll ini ke Firebase Cloud"
+            title="Save this payroll ledger link to Firebase Cloud"
           >
             <span className="material-symbols-outlined text-[16px] text-tertiary">cloud_upload</span>
-            <span>Simpan Link ke Firebase</span>
+            <span>Save Link to Firebase</span>
           </button>
 
           <button
@@ -280,7 +280,7 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-tertiary hover:text-primary transition-colors inline-flex items-center"
-                              title={`Pautan Dokumen Cloud: ${intern.documentUrl}`}
+                              title={`Cloud Document Link: ${intern.documentUrl}`}
                             >
                               <span className="material-symbols-outlined text-[15px]">attachment</span>
                             </a>

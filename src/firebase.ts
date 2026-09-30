@@ -419,7 +419,7 @@ export async function loginHR(
   if (normalizedEmail !== authorizedNormalized) {
     return {
       success: false,
-      message: `Akaun tidak dibenarkan. Sistem ini hanya membenarkan log masuk bagi HR Internship (${AUTHORIZED_HR_EMAIL}).`,
+      message: `Unauthorized account. This system only permits access for HR Internship (${AUTHORIZED_HR_EMAIL}).`,
     };
   }
 
@@ -428,7 +428,7 @@ export async function loginHR(
   if (passwordInput !== expectedPassword) {
     return {
       success: false,
-      message: 'Kata laluan tidak sah. Sila masukkan kata laluan yang betul atau gunakan fungsi "Lupa Kata Laluan".',
+      message: 'Invalid password. Please enter the correct password or use "Forgot Password".',
     };
   }
 
@@ -459,7 +459,7 @@ export async function loginHR(
 
   return {
     success: true,
-    message: 'Log masuk berjaya sebagai HR Internship.',
+    message: 'Signed in successfully as HR Internship.',
   };
 }
 
@@ -487,14 +487,14 @@ export async function changePasswordHR(
   if (currentPassword !== expectedPassword) {
     return {
       success: false,
-      message: 'Kata laluan semasa tidak tepat. Sila semak semula.',
+      message: 'Current password is incorrect. Please re-enter.',
     };
   }
 
   if (!newPassword || newPassword.length < 6) {
     return {
       success: false,
-      message: 'Kata laluan baharu mestilah mengandungi sekurang-kurangnya 6 aksara.',
+      message: 'New password must contain at least 6 characters.',
     };
   }
 
@@ -524,7 +524,7 @@ export async function changePasswordHR(
 
   return {
     success: true,
-    message: `Kata laluan bagi ${AUTHORIZED_HR_EMAIL} telah berjaya ditukar! Sila gunakan kata laluan baharu pada log masuk seterusnya.`,
+    message: `Password for ${AUTHORIZED_HR_EMAIL} has been successfully updated! Please use your new password on your next sign in.`,
   };
 }
 
@@ -539,7 +539,7 @@ export async function resetPasswordHR(
   if (normalized !== AUTHORIZED_HR_EMAIL.toLowerCase()) {
     return {
       success: false,
-      message: `Pautan reset hanya boleh dipautkan kepada emel rasmi ${AUTHORIZED_HR_EMAIL}.`,
+      message: `Reset link can only be associated with official email ${AUTHORIZED_HR_EMAIL}.`,
     };
   }
 
@@ -556,7 +556,7 @@ export async function resetPasswordHR(
     localStorage.setItem(STORAGE_KEY_CUSTOM_PASSWORD, newResetPassword);
     return {
       success: true,
-      message: `Kata laluan telah ditetapkan semula kepada "${newResetPassword}". Pengesahan dipautkan ke ${AUTHORIZED_HR_EMAIL}.`,
+      message: `Password has been reset to "${newResetPassword}". Verification linked to ${AUTHORIZED_HR_EMAIL}.`,
     };
   }
 
@@ -567,8 +567,8 @@ export async function resetPasswordHR(
     success: true,
     defaultRestored: true,
     message: firebaseEmailSent
-      ? `Pautan penetapan semula kata laluan telah dihantar ke ${AUTHORIZED_HR_EMAIL}. Kata laluan sandaran lalai (${DEFAULT_HR_PASSWORD}) telah diaktifkan semula.`
-      : `Pautan reset dipautkan ke emel ${AUTHORIZED_HR_EMAIL}. Kata laluan lalai rasmi (${DEFAULT_HR_PASSWORD}) telah diaktifkan semula untuk akses segera.`,
+      ? `A password reset link has been dispatched to ${AUTHORIZED_HR_EMAIL}. The default backup password (${DEFAULT_HR_PASSWORD}) has been restored.`
+      : `Reset request linked to ${AUTHORIZED_HR_EMAIL}. Official default password (${DEFAULT_HR_PASSWORD}) is re-activated for immediate access.`,
   };
 }
 

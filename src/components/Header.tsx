@@ -65,9 +65,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-space-lg">
           <div className="flex items-center gap-3">
             <img
-              alt="Media Prima Trainee Allowance Logo"
-              className="h-8 w-auto object-contain"
-              src="https://lh3.googleusercontent.com/aida/AEtjO1VeHW8yD2t6ZrhU_StqUmyuU2toG_Zb_nHv_hNzNueMLlJs5puCd32GwxclpfNr8cJUORJTUpjCiyHMbpPNZ5jBL-3JrX_jxMDOJVOlhzgAT0nkvYglz1e3kUaaMuU-ywba80TlhmhJi2rMcjKk6egRmFdZ--vrLyaKzxXgA8CZU3djCvhnEGonrDAOcQyR2-1nUSqGXjMYgVWwW5zLhOdJWTDvnN0iwBtuoDohfom9GPdQCh7QGAPPG3OZ"
+              alt="Media Prima Logo"
+              className="h-9 w-auto object-contain rounded"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStBpXeE56vQwea2rErJV2WJthfbY43hngtR4qJPMxLjA&s=10"
             />
             <div className="flex flex-col">
               <span className="font-headline-sm text-[15px] sm:text-[16px] text-on-surface tracking-tight leading-none font-semibold">
@@ -130,11 +130,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onOpenCloudLinks}
             className="h-9 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface flex items-center gap-1.5 transition-colors cursor-pointer border border-surface-container-high shadow-2xs font-label-md text-[12px]"
-            title="Pusat Simpanan Link & Dokumen Firebase"
+            title="Firebase Cloud Links & Documents Hub"
             type="button"
           >
             <span className="material-symbols-outlined text-[18px] text-tertiary">cloud_sync</span>
-            <span className="hidden sm:inline font-medium">Link &amp; Dokumen</span>
+            <span className="hidden sm:inline font-medium">Links &amp; Documents</span>
             <span className="px-1.5 py-0.2 bg-primary text-white text-[10px] font-bold rounded-full">
               {cloudLinksCount}
             </span>
@@ -154,14 +154,14 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
               className="flex items-center gap-2 pl-3 py-1 pr-1.5 bg-surface-container-low hover:bg-surface-container-high rounded-full border border-surface-container-high/60 transition-all cursor-pointer shadow-2xs"
-              title="Profil Pengguna: HR Internship"
+              title="User Profile: HR Internship"
             >
               <div className="flex flex-col text-right">
                 <div className="flex items-center justify-end gap-1.5">
                   <span className="font-label-md text-label-md text-on-surface font-semibold text-[12px]">HR Internship</span>
                   <span
                     className="inline-block w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-surface-container-lowest animate-pulse"
-                    title="Akaun HR Internship Aktif"
+                    title="Active HR Internship Session"
                   />
                 </div>
                 <span className="font-label-sm text-[10px] text-secondary font-mono">Internship@mediaprima.com.my</span>
@@ -175,11 +175,11 @@ export const Header: React.FC<HeaderProps> = ({
             {isProfileMenuOpen && (
               <div className="absolute right-0 top-12 w-64 bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-2 border-b border-surface-container-high/60 mb-1">
-                  <span className="text-[10px] text-secondary uppercase font-semibold block">Akaun Pengguna Sah</span>
+                  <span className="text-[10px] text-secondary uppercase font-semibold block">Authorized User Account</span>
                   <span className="font-semibold text-[13px] text-on-surface block">HR Internship</span>
                   <span className="font-mono text-[11px] text-secondary truncate block">Internship@mediaprima.com.my</span>
                   <span className="inline-block mt-1 text-[10px] bg-red-50 text-primary border border-red-200 px-1.5 py-0.2 rounded font-bold">
-                    Akses Pentadbir Tunggal
+                    Single Administrator Access
                   </span>
                 </div>
 
@@ -192,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[17px] text-tertiary">lock_reset</span>
-                    <span>Tukar Kata Laluan</span>
+                    <span>Change Password</span>
                   </button>
 
                   <button
@@ -203,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[17px] text-secondary">cloud_sync</span>
-                    <span>Pusat Link &amp; Dokumen</span>
+                    <span>Links &amp; Documents Hub</span>
                   </button>
 
                   <div className="border-t border-surface-container-high/60 my-1" />
@@ -216,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[17px]">logout</span>
-                    <span>Log Keluar</span>
+                    <span>Sign Out</span>
                   </button>
                 </div>
               </div>

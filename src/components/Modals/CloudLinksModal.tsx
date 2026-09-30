@@ -51,7 +51,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
     };
 
     onSaveLink(newLink);
-    showToast(`Link "${title}" berjaya disimpan dalam Firebase!`, 'cloud_done');
+    showToast(`Link "${title}" successfully saved to Firebase!`, 'cloud_done');
 
     // Reset form
     setTitle('');
@@ -62,13 +62,13 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
 
   const handleCopy = (linkUrl: string, linkTitle: string) => {
     navigator.clipboard.writeText(linkUrl);
-    showToast(`Pautan "${linkTitle}" disalin ke papan keratan`, 'content_copy');
+    showToast(`Link "${linkTitle}" copied to clipboard`, 'content_copy');
   };
 
   const handleDelete = (id: string, linkTitle: string) => {
-    if (window.confirm(`Padam pautan "${linkTitle}" dari Firebase?`)) {
+    if (window.confirm(`Delete link "${linkTitle}" from Firebase?`)) {
       onDeleteLink(id);
-      showToast(`Pautan "${linkTitle}" dipadam dari Firebase`, 'delete');
+      showToast(`Link "${linkTitle}" deleted from Firebase`, 'delete');
     }
   };
 
@@ -103,7 +103,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-headline-sm text-[16px] text-on-surface font-semibold">
-                  Pusat Simpanan Link &amp; Dokumen Firebase
+                  Cloud Links &amp; Documents Repository
                 </h3>
                 <span className="inline-flex items-center gap-1 font-label-sm text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
@@ -111,7 +111,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                 </span>
               </div>
               <p className="font-label-sm text-[11px] text-secondary">
-                Semua link, Google Drive, laporan dan fail disimpan terus ke pangkalan data cloud Firebase
+                All cloud links, Google Drive folders, payroll reports, and documents stored directly in Firebase
               </p>
             </div>
           </div>
@@ -130,7 +130,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari link, tajuk, atau penerangan..."
+              placeholder="Search by link title, URL, or description..."
               className="w-full h-8 pl-8 pr-3 bg-surface-container-lowest rounded-lg font-label-md text-[12px] text-on-surface focus:outline-none border border-surface-container-high"
             />
             <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-[16px] text-secondary">
@@ -149,7 +149,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
             <span className="material-symbols-outlined text-[16px]">
               {isAdding ? 'expand_less' : 'add_link'}
             </span>
-            <span>{isAdding ? 'Tutup Borang' : '+ Simpan Link Baru'}</span>
+            <span>{isAdding ? 'Close Form' : '+ Add New Link'}</span>
           </button>
         </div>
 
@@ -162,7 +162,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
             <div className="flex items-center justify-between mb-1">
               <span className="font-label-sm text-[12px] font-semibold text-primary uppercase tracking-wide flex items-center gap-1">
                 <span className="material-symbols-outlined text-[16px]">add_circle</span>
-                Daftar Link Baru ke Firebase
+                Save New Link to Firebase
               </span>
               <span className="text-[11px] text-secondary">Database: Cloud Firestore</span>
             </div>
@@ -170,21 +170,21 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-label-sm text-[11px] text-secondary mb-1">
-                  Tajuk Link / Dokumen <span className="text-primary">*</span>
+                  Document / Link Title <span className="text-primary">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="cth: Folder Google Drive Slip Pengesahan Elaun"
+                  placeholder="e.g., Trainee Signed Attendance Form Drive Folder"
                   className="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-label-md text-[12px] text-on-surface border border-surface-container-high focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block font-label-sm text-[11px] text-secondary mb-1">
-                  Kategori Link <span className="text-primary">*</span>
+                  Document Category <span className="text-primary">*</span>
                 </label>
                 <select
                   value={category}
@@ -202,14 +202,14 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
 
             <div>
               <label className="block font-label-sm text-[11px] text-secondary mb-1">
-                URL / Pautan Web <span className="text-primary">*</span>
+                URL / Web Link <span className="text-primary">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://drive.google.com/... atau https://..."
+                placeholder="https://drive.google.com/... or https://..."
                 className="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-mono text-[12px] text-on-surface border border-surface-container-high focus:outline-none"
               />
             </div>
@@ -217,14 +217,14 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-label-sm text-[11px] text-secondary mb-1">
-                  Entiti Media Prima Berkaitan (Pilihan)
+                  Associated Media Prima Entity (Optional)
                 </label>
                 <select
                   value={entityCode}
                   onChange={(e) => setEntityCode(e.target.value as CompanyEntityCode)}
                   className="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-label-md text-[12px] text-on-surface border border-surface-container-high focus:outline-none cursor-pointer"
                 >
-                  <option value="ALL">Semua Entiti (Group-Wide)</option>
+                  <option value="ALL">All Entities (Group-Wide)</option>
                   {MEDIA_PRIMA_ENTITIES.map((ent) => (
                     <option key={ent.code} value={ent.code}>
                       {ent.name}
@@ -235,13 +235,13 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
 
               <div>
                 <label className="block font-label-sm text-[11px] text-secondary mb-1">
-                  Nota / Penerangan Ringkas
+                  Brief Description / Notes
                 </label>
                 <input
                   type="text"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="cth: Fail laporan kehadiran yang telah disahkan"
+                  placeholder="e.g., Verified monthly attendance records"
                   className="w-full h-8 px-2.5 bg-surface-container-lowest rounded-lg font-label-md text-[12px] text-on-surface border border-surface-container-high focus:outline-none"
                 />
               </div>
@@ -253,14 +253,14 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                 onClick={() => setIsAdding(false)}
                 className="px-3 py-1 bg-surface-container text-secondary text-[12px] rounded-lg border border-surface-container-high"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 className="px-4 py-1 bg-primary-container hover:bg-primary text-white text-[12px] font-semibold rounded-lg shadow-xs flex items-center gap-1"
               >
                 <span className="material-symbols-outlined text-[15px]">cloud_upload</span>
-                <span>Simpan ke Firebase</span>
+                <span>Save to Firebase</span>
               </button>
             </div>
           </form>
@@ -276,7 +276,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                 : 'bg-surface-container-low text-secondary hover:text-on-surface'
             }`}
           >
-            Semua ({links.length})
+            All ({links.length})
           </button>
           {categories.map((c) => {
             const count = links.filter((l) => l.category === c).length;
@@ -303,9 +303,9 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
               <span className="material-symbols-outlined text-[36px] text-secondary/40 block mb-2">
                 link_off
               </span>
-              <p className="text-[13px] font-medium text-on-surface">Tiada link ditemui</p>
+              <p className="text-[13px] font-medium text-on-surface">No links found</p>
               <p className="text-[11px] text-secondary mt-1">
-                Klik butang "+ Simpan Link Baru" untuk menyimpan pautan pertama ke dalam Firebase.
+                Click "+ Add New Link" above to store your first link in Firebase.
               </p>
             </div>
           ) : (
@@ -364,7 +364,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                   <button
                     onClick={() => handleCopy(link.url, link.title)}
                     className="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-                    title="Salin Link"
+                    title="Copy Link"
                   >
                     <span className="material-symbols-outlined text-[17px]">content_copy</span>
                   </button>
@@ -374,7 +374,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 rounded-lg text-tertiary hover:bg-surface-container transition-colors cursor-pointer"
-                    title="Buka Pautan"
+                    title="Open Link"
                   >
                     <span className="material-symbols-outlined text-[17px]">open_in_new</span>
                   </a>
@@ -382,7 +382,7 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
                   <button
                     onClick={() => handleDelete(link.id, link.title)}
                     className="p-1.5 rounded-lg text-secondary hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                    title="Padam dari Firebase"
+                    title="Delete from Firebase"
                   >
                     <span className="material-symbols-outlined text-[17px]">delete</span>
                   </button>
@@ -396,13 +396,13 @@ export const CloudLinksModal: React.FC<CloudLinksModalProps> = ({
         <div className="px-6 py-3 bg-surface-container-low border-t border-surface-container-high flex items-center justify-between text-[11px] text-secondary">
           <div className="flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[16px] text-emerald-600">cloud_done</span>
-            <span>Semua link disimpan secara kekal dalam Firebase Firestore</span>
+            <span>All links are permanently stored in Firebase Firestore</span>
           </div>
           <button
             onClick={onClose}
             className="px-4 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-[12px] rounded-lg border border-surface-container-high cursor-pointer font-medium"
           >
-            Tutup
+            Close
           </button>
         </div>
       </div>

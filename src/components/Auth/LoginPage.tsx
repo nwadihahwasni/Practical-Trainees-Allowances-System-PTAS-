@@ -29,13 +29,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
     try {
       const res = await loginHR(email, password);
       if (res.success) {
-        showToast(`Selamat datang, HR Internship! Log masuk berjaya.`, 'verified_user');
+        showToast('Welcome, HR Internship! Authentication successful.', 'verified_user');
         onLoginSuccess();
       } else {
         setError(res.message);
       }
     } catch (err: any) {
-      setError(err?.message || 'Ralat log masuk. Sila cuba lagi.');
+      setError(err?.message || 'Authentication error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
     setEmail(AUTHORIZED_HR_EMAIL);
     setPassword(getEffectiveHRPassword());
     setError('');
-    showToast('Kredensial rasmi HR Internship diisi secara automatik.', 'key');
+    showToast('Official HR Internship credentials filled.', 'key');
   };
 
   return (
@@ -59,8 +59,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
         <div className="flex items-center gap-3">
           <img
             alt="Media Prima Logo"
-            className="h-8 w-auto object-contain"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1VeHW8yD2t6ZrhU_StqUmyuU2toG_Zb_nHv_hNzNueMLlJs5puCd32GwxclpfNr8cJUORJTUpjCiyHMbpPNZ5jBL-3JrX_jxMDOJVOlhzgAT0nkvYglz1e3kUaaMuU-ywba80TlhmhJi2rMcjKk6egRmFdZ--vrLyaKzxXgA8CZU3djCvhnEGonrDAOcQyR2-1nUSqGXjMYgVWwW5zLhOdJWTDvnN0iwBtuoDohfom9GPdQCh7QGAPPG3OZ"
+            className="h-9 w-auto object-contain rounded"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStBpXeE56vQwea2rErJV2WJthfbY43hngtR4qJPMxLjA&s=10"
           />
           <div className="hidden sm:flex flex-col">
             <span className="font-headline-sm text-[15px] text-on-surface font-semibold leading-tight">
@@ -75,7 +75,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high font-label-sm text-[11px] text-tertiary font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Sistem Keselamatan Statutori Aktif</span>
+            <span>Statutory Compliance System Active</span>
           </span>
         </div>
       </header>
@@ -89,16 +89,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
               <span className="material-symbols-outlined text-[26px]">badge</span>
             </div>
             <h1 className="font-headline-md text-[20px] font-bold text-on-surface tracking-tight">
-              Log Masuk HR Internship
+              HR Internship Sign In
             </h1>
             <p className="text-[12px] text-secondary mt-1 max-w-xs mx-auto">
-              Practical Trainee Allowance System (PTAS) — Sistem Pengurusan &amp; Pembayaran Elaun Pelatih
+              Practical Trainee Allowance System (PTAS) — Trainee Allowance &amp; Statutory Compliance Portal
             </p>
 
             {/* Single User Authority Pill */}
             <div className="mt-3.5 inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-primary px-3 py-1 rounded-full text-[11px] font-semibold">
               <span className="material-symbols-outlined text-[14px]">lock</span>
-              <span>Pengguna Tunggal: HR Internship</span>
+              <span>Single Authorized User: HR Internship</span>
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
             {/* Email Field */}
             <div>
               <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
-                Emel Rasmi HR <span className="text-primary">*</span>
+                Official HR Email <span className="text-primary">*</span>
               </label>
               <div className="relative">
                 <input
@@ -135,14 +135,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="font-label-sm text-secondary uppercase text-[11px] font-medium">
-                  Kata Laluan <span className="text-primary">*</span>
+                  Password <span className="text-primary">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsResetOpen(true)}
                   className="text-[11px] text-tertiary hover:underline font-semibold cursor-pointer"
                 >
-                  Lupa Kata Laluan?
+                  Forgot Password?
                 </button>
               </div>
 
@@ -152,7 +152,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan kata laluan"
+                  placeholder="Enter password"
                   className="w-full h-10 pl-9 pr-10 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high transition-colors"
                 />
                 <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-secondary">
@@ -162,7 +162,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface p-1 rounded cursor-pointer"
-                  title={showPassword ? 'Sembunyikan' : 'Papar'}
+                  title={showPassword ? 'Hide' : 'Show'}
                 >
                   <span className="material-symbols-outlined text-[18px]">
                     {showPassword ? 'visibility_off' : 'visibility'}
@@ -180,17 +180,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-[#b90027]"
                 />
-                <span className="text-[12px] text-secondary">Ingat sesi saya</span>
+                <span className="text-[12px] text-secondary">Remember session</span>
               </label>
 
               <button
                 type="button"
                 onClick={handleFillCredentials}
                 className="text-[11px] text-primary hover:text-primary-container font-semibold inline-flex items-center gap-1 cursor-pointer bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded transition-colors"
-                title="Isi automatik kredensial rasmi HR Internship"
+                title="Automatically fill official HR credentials"
               >
                 <span className="material-symbols-outlined text-[13px]">key</span>
-                <span>Isi Kredensial HR</span>
+                <span>Auto-Fill HR Credentials</span>
               </button>
             </div>
 
@@ -203,12 +203,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
               {loading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                  <span>Mengesahkan Kredensial...</span>
+                  <span>Authenticating Credentials...</span>
                 </>
               ) : (
                 <>
                   <span className="material-symbols-outlined text-[18px]">login</span>
-                  <span>Log Masuk ke Sistem PTAS</span>
+                  <span>Sign In to PTAS</span>
                 </>
               )}
             </button>
@@ -216,10 +216,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
 
           {/* Card Footer Info */}
           <div className="p-4 bg-surface-container-low/70 border-t border-surface-container-high/60 text-center text-[11px] text-secondary">
-            <span>Akaun rasmi: </span>
+            <span>Official Account: </span>
             <strong className="text-on-surface font-mono">{AUTHORIZED_HR_EMAIL}</strong>
             <span className="block mt-0.5">
-              Kata laluan asal lalai: <strong className="font-mono text-primary">{DEFAULT_HR_PASSWORD}</strong> (Boleh ditukar)
+              Default Password: <strong className="font-mono text-primary">{DEFAULT_HR_PASSWORD}</strong> (Changeable)
             </span>
           </div>
         </div>
@@ -227,7 +227,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, showToast 
 
       {/* Page Footer */}
       <footer className="py-4 text-center text-[11px] text-secondary border-t border-surface-container-high/40 bg-surface-container-lowest/50">
-        © 2026 Media Prima Berhad (Company No. 200001024235 [530182-V]). Hak Cipta Terpelihara • Portal Keselamatan HR
+        © 2026 Media Prima Berhad (Company No. 200001024235 [530182-V]). All Rights Reserved • HR Security Portal
       </footer>
 
       {/* Password Reset Modal */}

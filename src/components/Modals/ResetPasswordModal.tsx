@@ -41,7 +41,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
         setMessage({ type: 'error', text: res.message });
       }
     } catch (err: any) {
-      setMessage({ type: 'error', text: err?.message || 'Ralat semasa menghantar pautan reset.' });
+      setMessage({ type: 'error', text: err?.message || 'Error occurred while processing reset request.' });
     } finally {
       setLoading(false);
     }
@@ -53,14 +53,14 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
       const res = await resetPasswordHR(AUTHORIZED_HR_EMAIL);
       setMessage({
         type: 'success',
-        text: `Kata laluan asal rasmi (${DEFAULT_HR_PASSWORD}) telah diaktifkan semula bagi akaun ${AUTHORIZED_HR_EMAIL}.`,
+        text: `Official default password (${DEFAULT_HR_PASSWORD}) has been restored for ${AUTHORIZED_HR_EMAIL}.`,
       });
-      showToast(`Kata laluan ditetapkan semula ke "${DEFAULT_HR_PASSWORD}"`, 'key');
+      showToast(`Password restored to "${DEFAULT_HR_PASSWORD}"`, 'key');
       if (onResetSuccess) {
         onResetSuccess();
       }
     } catch (err: any) {
-      setMessage({ type: 'error', text: err?.message || 'Gagal menetapkan semula kata laluan.' });
+      setMessage({ type: 'error', text: err?.message || 'Failed to restore default password.' });
     } finally {
       setLoading(false);
     }
@@ -77,10 +77,10 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
             </div>
             <div>
               <h3 className="font-headline-sm text-[16px] text-on-surface font-semibold">
-                Reset Kata Laluan HR
+                Reset HR Password
               </h3>
               <p className="font-label-sm text-[11px] text-secondary">
-                Dipautkan ke emel rasmi {AUTHORIZED_HR_EMAIL}
+                Linked to official email {AUTHORIZED_HR_EMAIL}
               </p>
             </div>
           </div>
@@ -110,8 +110,8 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
           )}
 
           <div>
-            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
-              Emel Rasmi HR Terpaut <span className="text-primary">*</span>
+            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
+              Linked Official HR Email <span className="text-primary">*</span>
             </label>
             <input
               type="email"
@@ -122,14 +122,14 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               className="w-full h-9 px-3 bg-surface-container-high/60 rounded-lg font-label-md text-[13px] text-on-surface border border-surface-container-high font-medium cursor-not-allowed"
             />
             <p className="mt-1 text-[10px] text-secondary">
-              Sistem ini dikhususkan kepada satu akaun pengguna rasmi sahaja ({AUTHORIZED_HR_EMAIL}).
+              This system is restricted to a single official user account ({AUTHORIZED_HR_EMAIL}).
             </p>
           </div>
 
           {/* Reset Options */}
           <div className="space-y-2">
-            <span className="block font-label-sm text-secondary uppercase text-[11px]">
-              Pilihan Penetapan Semula:
+            <span className="block font-label-sm text-secondary uppercase text-[11px] font-medium">
+              Password Reset Options:
             </span>
 
             <div className="grid grid-cols-2 gap-2">
@@ -144,10 +144,10 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="material-symbols-outlined text-[16px] text-tertiary">mail</span>
-                  <span>Pautan Emel</span>
+                  <span>Email Reset Link</span>
                 </div>
                 <span className="text-[10px] text-secondary block">
-                  Hantar link reset ke peti masuk emel
+                  Send reset link to your official inbox
                 </span>
               </button>
 
@@ -162,10 +162,10 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="material-symbols-outlined text-[16px] text-primary">key</span>
-                  <span>Tetapan Segera</span>
+                  <span>Instant Reset</span>
                 </div>
                 <span className="text-[10px] text-secondary block">
-                  Cipta kata laluan baru serta-merta
+                  Set a new password immediately
                 </span>
               </button>
             </div>
@@ -173,14 +173,14 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
 
           {resetMethod === 'instant' && (
             <div>
-              <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
-                Kata Laluan Baharu (Segera)
+              <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
+                New Password (Instant)
               </label>
               <input
                 type="text"
                 value={customNewPass}
                 onChange={(e) => setCustomNewPass(e.target.value)}
-                placeholder="cth: Internship2026! (minimum 6 aksara)"
+                placeholder="e.g., Internship2026! (minimum 6 characters)"
                 className="w-full h-9 px-3 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface border border-surface-container-high focus:outline-none"
               />
             </div>
@@ -190,7 +190,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
           <div className="p-3 bg-surface-container-low rounded-lg border border-surface-container-high flex items-center justify-between gap-2">
             <div>
               <span className="font-semibold text-on-surface text-[12px] block">
-                Kembalikan Kata Laluan Lalai:
+                Restore Default Password:
               </span>
               <span className="font-mono text-[11px] text-secondary">
                 {DEFAULT_HR_PASSWORD}
@@ -201,7 +201,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               onClick={handleQuickDefaultRestore}
               className="px-2.5 py-1 bg-surface-container-highest hover:bg-surface-container-low text-primary text-[11px] font-semibold rounded border border-surface-container-high transition-colors cursor-pointer"
             >
-              Aktifkan {DEFAULT_HR_PASSWORD}
+              Activate {DEFAULT_HR_PASSWORD}
             </button>
           </div>
 
@@ -211,7 +211,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-[12px] rounded-lg border border-surface-container-high cursor-pointer"
             >
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -219,7 +219,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
               className="px-5 py-2 bg-tertiary hover:bg-blue-700 text-white font-label-md text-[12px] rounded-lg shadow-xs font-semibold cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
             >
               <span className="material-symbols-outlined text-[16px]">send</span>
-              <span>{loading ? 'Memproses...' : resetMethod === 'link' ? 'Hantar Pautan Reset' : 'Simpan Kata Laluan'}</span>
+              <span>{loading ? 'Processing...' : resetMethod === 'link' ? 'Send Reset Link' : 'Save New Password'}</span>
             </button>
           </div>
         </form>

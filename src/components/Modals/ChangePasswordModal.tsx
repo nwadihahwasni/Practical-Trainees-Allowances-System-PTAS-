@@ -27,12 +27,12 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     setError('');
 
     if (newPassword !== confirmPassword) {
-      setError('Kata laluan baharu dan pengesahan kata laluan tidak sepadan.');
+      setError('New password and confirm password do not match.');
       return;
     }
 
     if (newPassword.length < 6) {
-      setError('Kata laluan baharu mestilah sekurang-kurangnya 6 aksara.');
+      setError('New password must contain at least 6 characters.');
       return;
     }
 
@@ -49,7 +49,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
         setError(res.message);
       }
     } catch (err: any) {
-      setError(err?.message || 'Gagal menukar kata laluan. Sila cuba lagi.');
+      setError(err?.message || 'Failed to update password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -66,10 +66,10 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             </div>
             <div>
               <h3 className="font-headline-sm text-[16px] text-on-surface font-semibold">
-                Tukar Kata Laluan HR
+                Change HR Password
               </h3>
               <p className="font-label-sm text-[11px] text-secondary">
-                Akaun: {AUTHORIZED_HR_EMAIL}
+                Account: {AUTHORIZED_HR_EMAIL}
               </p>
             </div>
           </div>
@@ -91,8 +91,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           )}
 
           <div>
-            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
-              Kata Laluan Semasa <span className="text-primary">*</span>
+            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
+              Current Password <span className="text-primary">*</span>
             </label>
             <div className="relative">
               <input
@@ -100,13 +100,13 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 required
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Masukkan kata laluan sedia ada"
+                placeholder="Enter current password"
                 className="w-full h-9 pl-3 pr-9 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">
                   {showCurrent ? 'visibility_off' : 'visibility'}
@@ -116,8 +116,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           </div>
 
           <div>
-            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
-              Kata Laluan Baharu <span className="text-primary">*</span>
+            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
+              New Password <span className="text-primary">*</span>
             </label>
             <div className="relative">
               <input
@@ -125,13 +125,13 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimum 6 aksara"
+                placeholder="Minimum 6 characters"
                 className="w-full h-9 pl-3 pr-9 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high"
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">
                   {showNew ? 'visibility_off' : 'visibility'}
@@ -141,22 +141,22 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           </div>
 
           <div>
-            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
-              Sahkan Kata Laluan Baharu <span className="text-primary">*</span>
+            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1 font-medium">
+              Confirm New Password <span className="text-primary">*</span>
             </label>
             <input
               type="password"
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Ulang kata laluan baharu"
+              placeholder="Repeat new password"
               className="w-full h-9 px-3 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high"
             />
           </div>
 
           <div className="p-3 bg-surface-container-low/70 rounded-lg border border-surface-container-high text-[11px] text-secondary">
-            <span className="font-semibold text-on-surface block mb-0.5">Nota Keselamatan Media Prima:</span>
-            Kata laluan baharu ini akan dipautkan kepada akaun rasmi <strong>{AUTHORIZED_HR_EMAIL}</strong> dan berkuat kuasa serta-merta.
+            <span className="font-semibold text-on-surface block mb-0.5">Media Prima Security Notice:</span>
+            This new password will be linked to official account <strong>{AUTHORIZED_HR_EMAIL}</strong> and will take effect immediately.
           </div>
 
           <div className="pt-2 border-t border-surface-container-high flex items-center justify-end gap-2.5">
@@ -165,7 +165,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-[12px] rounded-lg border border-surface-container-high cursor-pointer"
             >
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -173,7 +173,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               className="px-5 py-2 bg-primary-container hover:bg-primary text-white font-label-md text-[12px] rounded-lg shadow-xs font-semibold cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
             >
               <span className="material-symbols-outlined text-[16px]">save</span>
-              <span>{loading ? 'Menyimpan...' : 'Simpan Kata Laluan'}</span>
+              <span>{loading ? 'Saving...' : 'Save Password'}</span>
             </button>
           </div>
         </form>
