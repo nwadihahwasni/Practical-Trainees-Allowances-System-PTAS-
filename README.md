@@ -1,6 +1,10 @@
 # Practical Trainee Allowance System (PTAS)
 ### Sistem Pengurusan & Pembayaran Elaun Pelatih Praktikal — Media Prima Berhad
 
+<p align="center">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStBpXeE56vQwea2rErJV2WJthfbY43hngtR4qJPMxLjA&s=10" alt="Media Prima Berhad Logo" height="60" />
+</p>
+
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -11,19 +15,20 @@
 
 ## 1. Pengenalan & Gambaran Keseluruhan (Product Overview)
 
-**Practical Trainee Allowance System (PTAS)** adalah aplikasi web korporat khusus untuk bahagian **Group People & Culture, Media Prima Berhad** bagi mengurus rekod pelatih praktikal (*interns*), mengautomasikan pengiraan elaun prorata berasaskan peraturan pembundaran integer yang ketat (*Strict Integer Rounding Rule*), menjejak penyerahan dokumen statutori tamat latihan (*offboarding*), menghantar peringatan emel, serta menyediakan analitik eksekutif merangkumi kesemua 11 entiti Media Prima.
+**Practical Trainee Allowance System (PTAS)** adalah aplikasi web korporat rasmi khusus untuk bahagian **Group People & Culture, Media Prima Berhad**. Sistem ini mengautomasikan pengurusan data pelatih praktikal (*interns*), pengiraan elaun prorata berasaskan peraturan pembundaran integer statutori (*Strict Integer Rounding Rule*), penjejakan dokumen statutori tamat latihan (*offboarding tracker*), penyimpanan pautan dan dokumen awan secara *real-time* di **Google Cloud Firestore**, serta menyediakan papan pemuka analitik eksekutif merangkumi kesemua 11 entiti Media Prima.
 
 ### Objektif Utama (Core Objectives)
-- **Ketepatan Pengiraan 100%**: Menghapuskan kesilapan pengiraan manual dalam pemberian elaun pelatih mengikut **Dasar Kumpulan HR-TR-04**.
-- **Integriti Data Ketat**: Menguatkuasakan pengesahan 100% bagi Nombor Kad Pengenalan (12 digit angka tanpa sengkang) dan format perbankan sebelum rekod disimpan.
-- **Kecekapan Masa**: Mengurangkan masa pemprosesan bulanan sekurang-kurangnya 80% dengan eksport fail penggajian siap guna (*payroll batch exports*).
-- **Penyimpanan Cloud Berpusat (Firebase Firestore)**: Menyimpan semua data pelatih, konfigurasi jabatan/bank, serta pautan dokumen/Google Drive secara *real-time*.
+- **Ketepatan Pengiraan 100%**: Menghapuskan kesilapan pengiraan manual elaun pelatih mengikut **Dasar Kumpulan HR-TR-04**.
+- **Integriti Data Ketat**: Menguatkuasakan pengesahan 100% bagi Nombor Kad Pengenalan (12 digit angka tanpa sengkang) dan format akaun bank sebelum data disimpan.
+- **Keselamatan Akses Pengguna Tunggal**: Sistem terhad kepada akaun rasmi **HR Internship** (`Internship@mediaprima.com.my`) dengan sokongan tukar dan reset kata laluan.
+- **Penyimpanan Cloud Berpusat (Firebase Firestore)**: Menyimpan semua data pelatih, konfigurasi dinamik, rekod audit, dan pautan dokumen awan secara langsung.
+- **Antara Muka Mesra Iframe & Responsif**: Menggunakan dialog dan modal dalam aplikasi (*in-app custom modals*) bagi memastikan kestabilan pada semua persekitaran pelayar.
 
 ---
 
 ## 2. Liputan 11 Entiti Media Prima (Scope & Entities)
 
-Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat Media Prima Berhad:
+Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat dan bahagian operasi Media Prima Berhad:
 
 1. **TV3** — Sistem Televisyen Malaysia Berhad (Broadcast Hub)
 2. **REV** — REV Media Group (Digital Media, Vocket, SAYS)
@@ -43,15 +48,15 @@ Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat 
 
 ### F01: Pendaftaran Masterlist & Pengesahan Data Ketat (*Strict Validation*)
 - Borang pendaftaran lengkap merangkumi: *Full Name, IC Number, Address, Company Entity, Department, Phone Number, Email, Duration From, Duration To, Bank Name, Bank Account Number,* dan *Document URL*.
-- **Peraturan Pengesahan IC (NRIC)**: Wajib tepat **12 digit nombor tanpa sengkang** (cth: `020415105824`). Jika format salah (seperti 10 digit atau mengandungi sengkang), mesej ralat merah dipaparkan dan penghantaran borang disekat serta-merta.
+- **Peraturan Pengesahan IC (NRIC)**: Wajib tepat **12 digit nombor tanpa sengkang** (cth: `020415105824`). Jika format tidak sah (cth: 10 digit atau mengandungi sengkang), mesej ralat merah dipaparkan dan butang simpan disekat.
 - **Format Tarikh Statutori**: Dipaparkan secara seragam dalam format `DD/MM/YYYY`.
 
 ### F02: Pengurusan Dinamik Jabatan & Bank
-- Pegawai HR boleh menambah atau mengedit nama Jabatan (*Departments*) dan Institusi Perbankan (*Banks*) secara dinamik.
-- Pilihan baharu dikemas kini secara global merentasi semua menu pilihan (*dropdown*) dan disimpan terus ke Firebase.
+- Pegawai HR boleh menambah, mengedit, atau memadam nama Jabatan (*Departments*) dan Institusi Perbankan (*Banks*) secara terus.
+- Pilihan baharu dikemas kini secara global merentasi semua menu pilihan (*dropdown*) dan disimpan terus ke Firestore.
 
 ### F03 & F04: Penjejak Dokumen Tamat Latihan (*Offboarding Tracker*) & Modal Peringatan
-- Menapis secara automatik pelatih yang tamat tempoh latihan pada bulan dan tahun yang dipilih.
+- Menapis secara automatik pelatih yang tamat tempoh latihan pada kitaran bulan dan tahun yang dipilih.
 - Menjejak 3 dokumen fizikal statutori wajib:
   1. **ID Tag / Pas Keselamatan** (*Access Card*)
   2. **Borang Kehadiran Bulanan** (*Signed Attendance Form*)
@@ -91,23 +96,39 @@ Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat 
 - **Roster Pematuhan & Audit Kewangan**: Jadual semakan audit setiap anak syarikat bersama butang *drill-down* **View Sheet $\rightarrow$** ke Penyata Elaun.
 
 ### F09: Cloud Links & Documents Repository (Firebase Firestore)
-- Dedicated **"Links & Documents"** button on the primary navigation bar.
-- Stores Google Drive folders, payroll reports, Maybank Corporate Autopay portals, and statutory guidelines directly in Cloud Firestore.
-- Supports individual trainee document links for quick access to resumes, offer letters, or Google Drive evaluation folders.
+- Butang pintas **"Links & Documents"** pada bar navigasi atas.
+- Menyimpan pautan folder Google Drive, laporan penggajian, portal Maybank Corporate Autopay, dan dokumen statutori terus ke Cloud Firestore.
+- Menyokong simpanan pautan dokumen terus pada setiap profil pelatih (*Document URL*).
+- Menyediakan fungsi carian pantas, penapis kategori, salin pautan, dan navigasi terus.
 
-### F10: Single-User Authentication (HR Internship) & Password Management
-- **Single Authorized User**: The system strictly restricts access to **HR Internship** (`Internship@mediaprima.com.my`). Any unauthorized email attempts are rejected.
-- **Default Official Credentials**:
+### F10: Portal Log Masuk Pengguna Tunggal (*Single-User HR Authentication*)
+- **Akaun Sah Tunggal**: Sistem dihadkan khusus kepada **HR Internship** (`Internship@mediaprima.com.my`). Percubaan emel lain disekat serta-merta dengan mesej amaran.
+- **Kredensial Rasmi**:
   - **Email**: `Internship@mediaprima.com.my`
   - **Initial Password**: `Internship123`
-- **Change Password**: Accessible directly from the top header profile dropdown, allowing HR to update their password (minimum 6 characters).
-- **Forgot / Reset Password**: Linked exclusively to the official email `Internship@mediaprima.com.my`, supporting Firebase password reset email delivery, instant password updates, or restoring the official default password.
+- Butang **"Auto-Fill HR Credentials"** disediakan untuk mempercepatkan proses log masuk bagi tujuan semakan operasi.
+- Pilihan **"Remember session"** untuk mengekalkan sesi pengguna.
+
+### F11: Pengurusan & Pemulihan Kata Laluan (*Password Management & Recovery*)
+- **Change HR Password (`ChangePasswordModal.tsx`)**:
+  - Boleh diakses terus melalui menu profil di bahagian atas kanan.
+  - Memerlukan kemasukan kata laluan semasa, kata laluan baharu (minimum 6 aksara), dan pengesahan kata laluan.
+  - Kata laluan baharu berkuat kuasa serta-merta untuk log masuk seterusnya.
+- **Reset HR Password (`ResetPasswordModal.tsx`)**:
+  - Boleh diakses melalui pautan **"Forgot Password?"** di portal log masuk.
+  - Terpaut secara kekal kepada emel rasmi `Internship@mediaprima.com.my`.
+  - Pilihan penghantaran pautan e-mel rasmi Firebase (*Email Reset Link*), penetapan segera (*Instant Reset*), atau pengaktifan semula kata laluan lalai (*Restore Default Password* `Internship123`).
+
+### F12: Modal Log Keluar Selamat (*In-App Sign Out Modal*)
+- Menggantikan penggunaan `window.confirm` pelayar kepada **SignOutModal** tersuai React (`SignOutModal.tsx`).
+- Menghapuskan isu sekatan dialog pelayar di dalam persekitaran *iframe* aplikasi.
+- Memastikan sesi dibersihkan dengan selamat sebelum mengembalikan pengguna ke skrin log masuk.
 
 ---
 
 ## 4. Senibina & Integrasi Firebase (Firebase Cloud Architecture)
 
-Sistem menggunakan **Google Cloud Firestore** dan **Firebase Authentication** untuk penyimpanan kekal:
+Sistem menggunakan **Google Cloud Firestore** dan **Firebase Authentication** untuk penyimpanan data kekal:
 
 - **Firebase Project ID**: `gen-lang-client-0743475428`
 - **Firestore Database ID**: `ai-studio-practicaltrainee-24c69876-c911-4f00-8ca4-fb6fad8ca809`
@@ -135,7 +156,7 @@ Sistem menggunakan **Google Cloud Firestore** dan **Firebase Authentication** un
 | **Frontend Framework** | React 19 (Hooks, Functional Components) |
 | **Bahasa Pengaturcaraan** | TypeScript (Strict Typing) |
 | **Gaya & Reka Bentuk** | Tailwind CSS v4, Plus Jakarta Sans, Inter, JetBrains Mono |
-| **Ikonografi** | Google Material Symbols Outlined & Lucide React |
+| **Ikonografi** | Google Material Symbols Outlined |
 | **Pangkalan Data Cloud** | Firebase Cloud Firestore (v11 SDK) & Anonymous Auth |
 | **Alat Binaan (Build Tool)** | Vite 8.3 & TSX |
 
@@ -178,15 +199,18 @@ npm run preview
 
 ## 7. Senarai Semak Ujian QA (QA Verification Checklist)
 
-Berdasarkan dokumen PRD Seksyen 8:
-
 | ID Ujian | Penerangan Kes Ujian | Tingkah Laku Dihasratkan | Status |
 |---|---|---|---|
 | **TC-01** | *Normal Intern Entry* | Rekod berjaya disimpan dan dipaparkan dalam jadual Masterlist. | **LULUS (Passed)** |
 | **TC-02** | *Invalid 10-Digit IC Entry* | Menyekat penghantaran borang; memaparkan ralat teks merah. | **LULUS (Passed)** |
 | **TC-03** | *Offboarding Filter (Aug 2026)* | Hanya memaparkan pelatih yang tamat latihan pada bulan Ogos 2026. | **LULUS (Passed)** |
 | **TC-04** | *Checklist Completion* | Menandakan 3 kotak dokumen menukar status kepada "Complete". | **LULUS (Passed)** |
-| **TC-06** | *Rounding Up (RM434.56)* | Sistem membundarkan nilai secara automatik kepada **RM 435**. | **LULUS (Passed)** |
+| **TC-05** | *Strict Integer Rounding (RM434.56)* | Sistem membundarkan nilai secara automatik kepada **RM 435**. | **LULUS (Passed)** |
+| **TC-06** | *Single-User Sign In* | Hanya membenarkan `Internship@mediaprima.com.my` log masuk; menolak emel lain. | **LULUS (Passed)** |
+| **TC-07** | *Change Password Flow* | Menukar kata laluan baharu dan mengemas kini sesi log masuk secara serta-merta. | **LULUS (Passed)** |
+| **TC-08** | *Reset Password Link* | Membolehkan pautan reset e-mel dihantar ke `Internship@mediaprima.com.my` atau penetapan segera. | **LULUS (Passed)** |
+| **TC-09** | *Sign Out in Iframe* | Membuka modal `SignOutModal`, menamatkan sesi tanpa sekatan pelayar, dan kembali ke skrin log masuk. | **LULUS (Passed)** |
+| **TC-10** | *Cloud Links & Documents* | Menyimpan, menapis, menyalin, dan memadam pautan awan di Firestore. | **LULUS (Passed)** |
 
 ---
 
