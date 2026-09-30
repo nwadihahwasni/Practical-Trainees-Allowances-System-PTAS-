@@ -12,6 +12,9 @@ interface HeaderProps {
   selectedMonth: number;
   setSelectedMonth: (month: number) => void;
   onOpenHelp: () => void;
+  onOpenCloudLinks: () => void;
+  cloudLinksCount: number;
+  isCloudConnected: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,6 +27,9 @@ export const Header: React.FC<HeaderProps> = ({
   selectedMonth,
   setSelectedMonth,
   onOpenHelp,
+  onOpenCloudLinks,
+  cloudLinksCount,
+  isCloudConnected,
 }) => {
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -101,6 +107,20 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="material-symbols-outlined text-[18px]">query_stats</span>
             </button>
           </div>
+
+          {/* Cloud Links Repository Button */}
+          <button
+            onClick={onOpenCloudLinks}
+            className="h-9 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface flex items-center gap-1.5 transition-colors cursor-pointer border border-surface-container-high shadow-2xs font-label-md text-[12px]"
+            title="Pusat Simpanan Link & Dokumen Firebase"
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[18px] text-tertiary">cloud_sync</span>
+            <span className="hidden sm:inline font-medium">Link &amp; Dokumen</span>
+            <span className="px-1.5 py-0.2 bg-primary text-white text-[10px] font-bold rounded-full">
+              {cloudLinksCount}
+            </span>
+          </button>
 
           <button
             onClick={onOpenHelp}
@@ -200,8 +220,19 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right Audited Cycle Code */}
+        {/* Right Audited Cycle Code & Cloud Sync Status */}
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-secondary font-label-sm text-[12px] whitespace-nowrap">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isCloudConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+              }`}
+            />
+            <span className="text-[11px] font-medium text-on-surface hidden md:inline">
+              Firebase: <span className="text-emerald-700 font-semibold">Tersimpan di Cloud</span>
+            </span>
+          </div>
+
           <div className="flex items-center gap-1.5 text-secondary font-label-sm text-[12px] whitespace-nowrap">
             <span className="material-symbols-outlined text-[16px] text-primary">verified_user</span>
             <span>

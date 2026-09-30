@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CompanyEntityCode, Intern } from './types';
+import { CompanyEntityCode, Intern, CloudLink } from './types';
 import {
   INITIAL_INTERNS,
   DEFAULT_DEPARTMENTS,
@@ -15,10 +15,22 @@ import { ManageDeptsBanksModal } from './components/Modals/ManageDeptsBanksModal
 import { SendReminderModal } from './components/Modals/SendReminderModal';
 import { RemarksModal } from './components/Modals/RemarksModal';
 import { HelpModal } from './components/Modals/HelpModal';
-
-const STORAGE_KEY_INTERNS = 'mediaprima_ptas_interns_v1';
-const STORAGE_KEY_DEPTS = 'mediaprima_ptas_depts_v1';
-const STORAGE_KEY_BANKS = 'mediaprima_ptas_banks_v1';
+import { CloudLinksModal } from './components/Modals/CloudLinksModal';
+import {
+  ensureAuth,
+  testConnection,
+  subscribeToInterns,
+  saveInternToFirestore,
+  deleteInternFromFirestore,
+  subscribeToDepartments,
+  saveDepartmentsToFirestore,
+  subscribeToBanks,
+  saveBanksToFirestore,
+  subscribeToLinks,
+  saveLinkToFirestore,
+  deleteLinkFromFirestore,
+  INITIAL_CLOUD_LINKS,
+} from './firebase';
 
 export default function App() {
   // Navigation & Scope State
@@ -27,75 +39,61 @@ export default function App() {
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedMonth, setSelectedMonth] = useState<number>(8); // August 2026 active cycle
 
-  // Data persistence in LocalStorage (PRD In-Scope & Implementation Stage 1)
-  const [interns, setInterns] = useState<Intern[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_INTERNS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error('Failed to load interns from storage', e);
-    }
-    return INITIAL_INTERNS;
-  });
+  // Real-time Firestore state with initial data fallback
+  const [interns, setInterns] = useState<Intern[]>(INITIAL_INTERNS);
+  const [departments, setDepartments] = useState<string[]>(DEFAULT_DEPARTMENTS);
+  const [banks, setBanks] = useState<string[]>(DEFAULT_BANKS);
+  const [links, setLinks] = useState<CloudLink[]>(INITIAL_CLOUD_LINKS);
+  const [isCloudConnected, setIsCloudConnected] = useState<boolean>(false);
 
-  const [departments, setDepartments] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_DEPTS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error('Failed to load departments from storage', e);
-    }
-    return DEFAULT_DEPARTMENTS;
-  });
-
-  const [banks, setBanks] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_BANKS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error('Failed to load banks from storage', e);
-    }
-    return DEFAULT_BANKS;
-  });
-
-  // Sync to localStorage
+  // Initialize Firebase Auth & Real-Time Firestore listeners
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_INTERNS, JSON.stringify(interns));
-    } catch (e) {
-      console.error('Failed to save interns', e);
-    }
-  }, [interns]);
+    let unsubInterns: (() => void) | undefined;
+    let unsubDepts: (() => void) | undefined;
+    let unsubBanks: (() => void) | undefined;
+    let unsubLinks: (() => void) | undefined;
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_DEPTS, JSON.stringify(departments));
-    } catch (e) {
-      console.error('Failed to save departments', e);
-    }
-  }, [departments]);
+    async function initFirebase() {
+      try {
+        await ensureAuth();
+        await testConnection();
+        setIsCloudConnected(true);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_BANKS, JSON.stringify(banks));
-    } catch (e) {
-      console.error('Failed to save banks', e);
+        unsubInterns = subscribeToInterns((data) => {
+          setInterns(data);
+        });
+
+        unsubDepts = subscribeToDepartments((depts) => {
+          setDepartments(depts);
+        });
+
+        unsubBanks = subscribeToBanks((b) => {
+          setBanks(b);
+        });
+
+        unsubLinks = subscribeToLinks((cloudLinks) => {
+          setLinks(cloudLinks);
+        });
+      } catch (err) {
+        console.warn('Firebase sync initialized in local-first mode:', err);
+      }
     }
-  }, [banks]);
+
+    initFirebase();
+
+    return () => {
+      if (unsubInterns) unsubInterns();
+      if (unsubDepts) unsubDepts();
+      if (unsubBanks) unsubBanks();
+      if (unsubLinks) unsubLinks();
+    };
+  }, []);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingIntern, setEditingIntern] = useState<Intern | null>(null);
   const [isManageDeptsBanksOpen, setIsManageDeptsBanksOpen] = useState(false);
+  const [isCloudLinksModalOpen, setIsCloudLinksModalOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [remarksIntern, setRemarksIntern] = useState<Intern | null>(null);
   const [reminderIntern, setReminderIntern] = useState<Intern | null>(null);
@@ -110,8 +108,9 @@ export default function App() {
     }, 3200);
   };
 
-  // CRUD Handlers
-  const handleSaveIntern = (savedIntern: Intern) => {
+  // CRUD Handlers with Firestore Persistence
+  const handleSaveIntern = async (savedIntern: Intern) => {
+    // Optimistic UI update
     setInterns((prev) => {
       const index = prev.findIndex((i) => i.id === savedIntern.id);
       if (index >= 0) {
@@ -121,14 +120,68 @@ export default function App() {
       }
       return [savedIntern, ...prev];
     });
+
+    try {
+      await saveInternToFirestore(savedIntern);
+    } catch (e) {
+      console.error('Firestore save intern error:', e);
+    }
   };
 
-  const handleUpdateIntern = (updated: Intern) => {
+  const handleUpdateIntern = async (updated: Intern) => {
+    // Optimistic update
     setInterns((prev) => prev.map((i) => (i.id === updated.id ? updated : i)));
+    try {
+      await saveInternToFirestore(updated);
+    } catch (e) {
+      console.error('Firestore update intern error:', e);
+    }
   };
 
-  const handleDeleteIntern = (id: string) => {
+  const handleDeleteIntern = async (id: string) => {
+    // Optimistic delete
     setInterns((prev) => prev.filter((i) => i.id !== id));
+    try {
+      await deleteInternFromFirestore(id);
+    } catch (e) {
+      console.error('Firestore delete intern error:', e);
+    }
+  };
+
+  const handleUpdateDepartments = async (newDepts: string[]) => {
+    setDepartments(newDepts);
+    try {
+      await saveDepartmentsToFirestore(newDepts);
+    } catch (e) {
+      console.error('Firestore update departments error:', e);
+    }
+  };
+
+  const handleUpdateBanks = async (newBanks: string[]) => {
+    setBanks(newBanks);
+    try {
+      await saveBanksToFirestore(newBanks);
+    } catch (e) {
+      console.error('Firestore update banks error:', e);
+    }
+  };
+
+  const handleSaveLink = async (newLink: CloudLink) => {
+    setLinks((prev) => [newLink, ...prev.filter((l) => l.id !== newLink.id)]);
+    try {
+      await saveLinkToFirestore(newLink);
+    } catch (e) {
+      console.error('Firestore save link error:', e);
+    }
+  };
+
+  const handleDeleteLink = async (id: string) => {
+    setLinks((prev) => prev.filter((l) => l.id !== id));
+    try {
+      await deleteLinkFromFirestore(id);
+    } catch (e) {
+      console.error('Firestore delete link error:', e);
+    }
   };
 
   const handleOpenEdit = (intern: Intern) => {
@@ -156,6 +209,9 @@ export default function App() {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         onOpenHelp={() => setIsHelpOpen(true)}
+        onOpenCloudLinks={() => setIsCloudLinksModalOpen(true)}
+        cloudLinksCount={links.length}
+        isCloudConnected={isCloudConnected}
       />
 
       {/* Main Content Workspace */}
@@ -174,6 +230,7 @@ export default function App() {
               onOpenManageDeptsBanks={() => setIsManageDeptsBanksOpen(true)}
               onOpenRemarks={(intern) => setRemarksIntern(intern)}
               onOpenSendReminder={(intern) => setReminderIntern(intern)}
+              onSavePayrollLinkToFirebase={handleSaveLink}
               selectedYear={selectedYear}
               setSelectedYear={setSelectedYear}
               selectedMonth={selectedMonth}
@@ -218,9 +275,18 @@ export default function App() {
         isOpen={isManageDeptsBanksOpen}
         onClose={() => setIsManageDeptsBanksOpen(false)}
         departments={departments}
-        setDepartments={setDepartments}
+        setDepartments={handleUpdateDepartments}
         banks={banks}
-        setBanks={setBanks}
+        setBanks={handleUpdateBanks}
+        showToast={showToast}
+      />
+
+      <CloudLinksModal
+        isOpen={isCloudLinksModalOpen}
+        onClose={() => setIsCloudLinksModalOpen(false)}
+        links={links}
+        onSaveLink={handleSaveLink}
+        onDeleteLink={handleDeleteLink}
         showToast={showToast}
       />
 
@@ -246,3 +312,5 @@ export default function App() {
     </div>
   );
 }
+
+

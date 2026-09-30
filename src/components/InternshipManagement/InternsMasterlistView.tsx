@@ -117,9 +117,23 @@ export const InternsMasterlistView: React.FC<InternsMasterlistViewProps> = ({
                     {/* Trainee Profile */}
                     <td className="px-4 py-3 align-top">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-on-surface text-[14px]">
-                          {intern.fullName}
-                        </span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-semibold text-on-surface text-[14px]">
+                            {intern.fullName}
+                          </span>
+                          {intern.documentUrl && (
+                            <a
+                              href={intern.documentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-tertiary hover:text-primary transition-colors inline-flex items-center gap-0.5 bg-surface-container-high px-1.5 py-0.2 rounded text-[11px] font-medium"
+                              title={`Pautan Fail Cloud: ${intern.documentUrl}`}
+                            >
+                              <span className="material-symbols-outlined text-[13px]">attachment</span>
+                              <span>Pautan Dokumen</span>
+                            </a>
+                          )}
+                        </div>
                         <span className="font-code-tabular text-[12px] text-primary font-medium mt-0.5">
                           {formatICDisplay(intern.icNumber)}
                         </span>

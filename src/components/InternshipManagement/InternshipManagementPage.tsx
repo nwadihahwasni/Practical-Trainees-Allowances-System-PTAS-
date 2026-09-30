@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CompanyEntityCode, Intern } from '../../types';
+import { CompanyEntityCode, Intern, CloudLink } from '../../types';
 import { AllowanceSheetView } from './AllowanceSheetView';
 import { InternsMasterlistView } from './InternsMasterlistView';
 import { OffboardingTrackerView } from './OffboardingTrackerView';
@@ -15,6 +15,7 @@ interface InternshipManagementPageProps {
   onOpenManageDeptsBanks: () => void;
   onOpenRemarks: (intern: Intern) => void;
   onOpenSendReminder: (intern: Intern) => void;
+  onSavePayrollLinkToFirebase?: (link: CloudLink) => void;
   selectedYear: number;
   setSelectedYear: (year: number) => void;
   selectedMonth: number;
@@ -33,6 +34,7 @@ export const InternshipManagementPage: React.FC<InternshipManagementPageProps> =
   onOpenManageDeptsBanks,
   onOpenRemarks,
   onOpenSendReminder,
+  onSavePayrollLinkToFirebase,
   selectedYear,
   setSelectedYear,
   selectedMonth,
@@ -280,6 +282,7 @@ export const InternshipManagementPage: React.FC<InternshipManagementPageProps> =
           selectedEntity={selectedEntity}
           onUpdateIntern={onUpdateIntern}
           onOpenRemarks={onOpenRemarks}
+          onSavePayrollLinkToFirebase={onSavePayrollLinkToFirebase}
           showToast={showToast}
         />
       )}

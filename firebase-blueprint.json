@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Intern": {
+      "title": "Intern",
+      "description": "Practical trainee record for Media Prima subsidiaries",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of intern" },
+        "fullName": { "type": "string", "description": "Full legal name as per Malaysian IC" },
+        "icNumber": { "type": "string", "description": "12-digit Malaysian NRIC without hyphens" },
+        "address": { "type": "string", "description": "Residential address" },
+        "companyCode": { "type": "string", "description": "Media Prima subsidiary code" },
+        "companyName": { "type": "string", "description": "Full subsidiary entity name" },
+        "department": { "type": "string", "description": "Operating department or division" },
+        "phoneNumber": { "type": "string", "description": "Contact phone number" },
+        "email": { "type": "string", "description": "Corporate or trainee email" },
+        "durationFrom": { "type": "string", "description": "Start date in ISO YYYY-MM-DD" },
+        "durationTo": { "type": "string", "description": "End date in ISO YYYY-MM-DD" },
+        "bankName": { "type": "string", "description": "Banking institution" },
+        "bankAccountNumber": { "type": "string", "description": "Bank account number" },
+        "leaveDays": { "type": "number", "description": "Deducted leave or MC days" },
+        "paymentStatus": { "type": "string", "description": "Disbursement batch release status" },
+        "remarks": { "type": "string", "description": "Finance and HR audit notes" },
+        "documentUrl": { "type": "string", "description": "External Google Drive or portfolio link" },
+        "offboarding": { "type": "object", "description": "Mandatory 3-document offboarding checklist" }
+      },
+      "required": [
+        "fullName",
+        "icNumber",
+        "companyCode",
+        "companyName",
+        "department",
+        "durationFrom",
+        "durationTo",
+        "bankName",
+        "bankAccountNumber"
+      ]
+    },
+    "Config": {
+      "title": "Config",
+      "description": "Global application configuration for departments and banks",
+      "type": "object",
+      "properties": {
+        "items": { "type": "array", "description": "List of dynamic string options" }
+      },
+      "required": ["items"]
+    },
+    "CloudLink": {
+      "title": "CloudLink",
+      "description": "Stored link and reference document in Firebase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of link" },
+        "title": { "type": "string", "description": "Title or name of the link" },
+        "url": { "type": "string", "description": "Full web URL" },
+        "category": { "type": "string", "description": "Category of the link" },
+        "description": { "type": "string", "description": "Notes or context" },
+        "entityCode": { "type": "string", "description": "Associated entity code" },
+        "createdAt": { "type": "string", "description": "Creation timestamp in ISO" },
+        "createdBy": { "type": "string", "description": "Creator user email or name" }
+      },
+      "required": ["title", "url"]
+    }
+  },
+  "firestore": {
+    "/interns/{internId}": {
+      "schema": "Intern",
+      "description": "Trainee allowance and masterlist documents"
+    },
+    "/config/{configId}": {
+      "schema": "Config",
+      "description": "Global application configuration for departments and banks"
+    },
+    "/links/{linkId}": {
+      "schema": "CloudLink",
+      "description": "Stored links and cloud reference documents"
+    }
+  }
+}

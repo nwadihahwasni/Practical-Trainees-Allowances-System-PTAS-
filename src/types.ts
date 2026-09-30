@@ -29,6 +29,9 @@ export interface OffboardingChecklist {
   progressReportSubmitted: boolean;
   clearanceDate?: string;
   clearedBy?: string;
+  idTagDocUrl?: string;
+  attendanceFormUrl?: string;
+  progressReportUrl?: string;
 }
 
 export type PaymentStatus = 'Release Batch' | 'On Hold';
@@ -50,8 +53,20 @@ export interface Intern {
   leaveDays: number;
   paymentStatus: PaymentStatus;
   remarks?: string;
+  documentUrl?: string; // Link to drive folder, offer letter, or resume
   offboarding: OffboardingChecklist;
   avatarSeed?: string;
+}
+
+export interface CloudLink {
+  id: string;
+  title: string;
+  url: string;
+  category: 'Payroll Sheet' | 'Google Drive' | 'Statutory Document' | 'Bank Autopay' | 'Other';
+  description?: string;
+  entityCode?: CompanyEntityCode;
+  createdAt: string;
+  createdBy?: string;
 }
 
 export interface AllowanceCalculationResult {

@@ -35,6 +35,7 @@ export const AddInternModal: React.FC<AddInternModalProps> = ({
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('Release Batch');
   const [remarks, setRemarks] = useState('');
+  const [documentUrl, setDocumentUrl] = useState('');
 
   // Validation errors
   const [icError, setIcError] = useState<string>('');
@@ -56,6 +57,7 @@ export const AddInternModal: React.FC<AddInternModalProps> = ({
       setBankAccountNumber(existingIntern.bankAccountNumber);
       setPaymentStatus(existingIntern.paymentStatus);
       setRemarks(existingIntern.remarks || '');
+      setDocumentUrl(existingIntern.documentUrl || '');
     } else {
       // Defaults
       setFullName('');
@@ -71,6 +73,7 @@ export const AddInternModal: React.FC<AddInternModalProps> = ({
       setBankAccountNumber('');
       setPaymentStatus('Release Batch');
       setRemarks('');
+      setDocumentUrl('');
     }
     setIcError('');
     setEmailError('');
@@ -142,6 +145,7 @@ export const AddInternModal: React.FC<AddInternModalProps> = ({
       leaveDays: existingIntern ? existingIntern.leaveDays : 0,
       paymentStatus,
       remarks: remarks.trim(),
+      documentUrl: documentUrl.trim() || undefined,
       offboarding: existingIntern ? existingIntern.offboarding : {
         idTagReturned: false,
         attendanceFormSubmitted: false,
@@ -426,6 +430,28 @@ export const AddInternModal: React.FC<AddInternModalProps> = ({
                 className="w-full h-9 px-3 bg-surface-container-low rounded-lg font-label-md text-[13px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high"
               />
             </div>
+          </div>
+
+          {/* Pautan Dokumen / Google Drive Folder */}
+          <div>
+            <label className="block font-label-sm text-secondary uppercase text-[11px] mb-1">
+              Pautan Dokumen / Google Drive Folder (Disimpan dalam Firebase)
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={documentUrl}
+                onChange={(e) => setDocumentUrl(e.target.value)}
+                placeholder="https://drive.google.com/drive/folders/... atau pautan resume/surat tawaran"
+                className="w-full h-9 pl-8 pr-3 bg-surface-container-low rounded-lg font-mono text-[12px] text-on-surface focus:outline-none focus:bg-surface-container-high border border-surface-container-high"
+              />
+              <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-tertiary">
+                link
+              </span>
+            </div>
+            <p className="mt-1 text-[10px] text-secondary">
+              Pautan ini disimpan terus ke profil trainee dalam Cloud Firestore.
+            </p>
           </div>
 
           {/* Modal Actions */}

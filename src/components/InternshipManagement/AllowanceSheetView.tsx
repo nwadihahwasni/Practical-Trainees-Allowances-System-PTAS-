@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CompanyEntityCode, Intern, PaymentStatus } from '../../types';
+import { CompanyEntityCode, Intern, PaymentStatus, CloudLink } from '../../types';
 import { calculateAllowance, formatMYR, getDaysInMonth } from '../../utils/allowanceCalculator';
 import { formatICDisplay } from '../../utils/validation';
 import {
@@ -16,6 +16,7 @@ interface AllowanceSheetViewProps {
   selectedEntity: CompanyEntityCode;
   onUpdateIntern: (updated: Intern) => void;
   onOpenRemarks: (intern: Intern) => void;
+  onSavePayrollLinkToFirebase?: (link: CloudLink) => void;
   showToast: (msg: string, icon?: string) => void;
 }
 
@@ -26,6 +27,7 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
   selectedEntity,
   onUpdateIntern,
   onOpenRemarks,
+  onSavePayrollLinkToFirebase,
   showToast,
 }) => {
   const [activeDaysOverrides, setActiveDaysOverrides] = useState<Record<string, number>>({
@@ -125,6 +127,23 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
     showToast(`Allowance sheet copied in Google Sheets format! Paste into any spreadsheet.`, 'content_paste');
   };
 
+  const handleSaveBatchLink = () => {
+    if (onSavePayrollLinkToFirebase) {
+      const link: CloudLink = {
+        id: `link-payroll-${selectedYear}-${selectedMonth}-${selectedEntity}-${Date.now()}`,
+        title: `Penyata Elaun Payroll: ${monthName} ${selectedYear} (${selectedEntity})`,
+        url: `https://mediaprima-internal.web.app/payroll/${selectedYear}/${selectedMonth}/${selectedEntity}`,
+        category: 'Payroll Sheet',
+        description: `Disimpan ke Firebase: RM ${grossApprovedPayout.toLocaleString('en-MY')} bagi ${totalTrainees} pelatih (${releasedCount} released, ${holdCount} on hold).`,
+        entityCode: selectedEntity === 'ALL' ? undefined : selectedEntity,
+        createdAt: new Date().toISOString(),
+        createdBy: 'HR Admin Ops',
+      };
+      onSavePayrollLinkToFirebase(link);
+      showToast(`Penyata & link payroll ${monthName} ${selectedYear} disimpan ke Firebase!`, 'cloud_done');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {/* Media Prima Allowance Disbursement Formula (Group Policy HR-TR-04) Banner */}
@@ -198,6 +217,15 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
           </button>
 
           <button
+            onClick={handleSaveBatchLink}
+            className="px-3 py-1.5 bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-[12px] rounded-lg transition-colors flex items-center gap-1.5 border border-surface-container-high cursor-pointer"
+            title="Simpan pautan rekod payroll ini ke Firebase Cloud"
+          >
+            <span className="material-symbols-outlined text-[16px] text-tertiary">cloud_upload</span>
+            <span>Simpan Link ke Firebase</span>
+          </button>
+
+          <button
             onClick={printAllowanceSheet}
             className="px-3.5 py-1.5 bg-primary-container hover:bg-primary text-white font-label-md text-[12px] rounded-lg transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer font-semibold"
           >
@@ -242,9 +270,22 @@ export const AllowanceSheetView: React.FC<AllowanceSheetViewProps> = ({
                     {/* Intern Details */}
                     <td className="px-4 py-3 align-top">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-on-surface text-[14px]">
-                          {intern.fullName}
-                        </span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-semibold text-on-surface text-[14px]">
+                            {intern.fullName}
+                          </span>
+                          {intern.documentUrl && (
+                            <a
+                              href={intern.documentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-tertiary hover:text-primary transition-colors inline-flex items-center"
+                              title={`Pautan Dokumen Cloud: ${intern.documentUrl}`}
+                            >
+                              <span className="material-symbols-outlined text-[15px]">attachment</span>
+                            </a>
+                          )}
+                        </div>
                         <span className="font-code-tabular text-[12px] text-secondary mt-0.5">
                           {formatICDisplay(intern.icNumber)}
                         </span>

@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net: Default-deny all undefined paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validates Intern document schema
+    function isValidIntern(data) {
+      return data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 200
+        && data.icNumber is string && data.icNumber.size() == 12 && data.icNumber.matches('^[0-9]{12}$')
+        && data.companyCode is string && data.companyCode.size() <= 50
+        && data.companyName is string && data.companyName.size() <= 200
+        && data.department is string && data.department.size() <= 200
+        && data.durationFrom is string && data.durationFrom.size() == 10
+        && data.durationTo is string && data.durationTo.size() == 10
+        && data.bankName is string && data.bankName.size() <= 100
+        && data.bankAccountNumber is string && data.bankAccountNumber.size() <= 50
+        && (!('leaveDays' in data) || (data.leaveDays is number && data.leaveDays >= 0 && data.leaveDays <= 31))
+        && (!('paymentStatus' in data) || (data.paymentStatus in ['Release Batch', 'On Hold']))
+        && (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() <= 30))
+        && (!('email' in data) || (data.email is string && data.email.size() <= 150))
+        && (!('address' in data) || (data.address is string && data.address.size() <= 500))
+        && (!('remarks' in data) || (data.remarks is string && data.remarks.size() <= 1000))
+        && (!('documentUrl' in data) || (data.documentUrl is string && data.documentUrl.size() <= 1000));
+    }
+
+    // Validates Config document schema
+    function isValidConfig(data) {
+      return data.items is list && data.items.size() <= 100;
+    }
+
+    // Validates CloudLink document schema
+    function isValidLink(data) {
+      return data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.url is string && data.url.size() >= 3 && data.url.size() <= 1000
+        && (!('category' in data) || (data.category is string && data.category.size() <= 100))
+        && (!('description' in data) || (data.description is string && data.description.size() <= 500))
+        && (!('entityCode' in data) || (data.entityCode is string && data.entityCode.size() <= 50))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        && (!('createdBy' in data) || (data.createdBy is string && data.createdBy.size() <= 100));
+    }
+
+    // Connection test document
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Interns collection
+    match /interns/{internId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && isValidId(internId)
+        && isValidIntern(incoming());
+      allow update: if isSignedIn()
+        && isValidId(internId)
+        && isValidIntern(incoming());
+      allow delete: if isSignedIn()
+        && isValidId(internId);
+    }
+
+    // Global Configuration (departments, banks)
+    match /config/{configId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn()
+        && isValidId(configId)
+        && isValidConfig(incoming());
+      allow delete: if isSignedIn()
+        && isValidId(configId);
+    }
+
+    // Links collection
+    match /links/{linkId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn()
+        && isValidId(linkId)
+        && isValidLink(incoming());
+      allow delete: if isSignedIn()
+        && isValidId(linkId);
+    }
+  }
+}
