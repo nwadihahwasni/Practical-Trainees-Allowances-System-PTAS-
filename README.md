@@ -10,6 +10,15 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Live App](https://img.shields.io/badge/Live_App-AI_Studio-EA4335?logo=google&logoColor=white)](https://ai.studio/apps/24c69876-c911-4f00-8ca4-fb6fad8ca809)
+
+> 🌐 **Pautan Pengujian & Akses Langsung (Live Application URL)**:  
+> 👉 **[https://ai.studio/apps/24c69876-c911-4f00-8ca4-fb6fad8ca809](https://ai.studio/apps/24c69876-c911-4f00-8ca4-fb6fad8ca809)**  
+>
+> 🔑 **Kredensial Rasmi Log Masuk HR Internship**:
+> - **Email**: `Internship@mediaprima.com.my`
+> - **Password**: `Internship123` *(atau gunakan butang pintas "Auto-Fill HR Credentials")*  
+> *Sistem berjalan secara langsung atas talian dengan pangkalan data Cloud Firestore yang aktif.*
 
 ---
 
@@ -164,7 +173,14 @@ Sistem menggunakan **Google Cloud Firestore** dan **Firebase Authentication** un
 
 ## 6. Panduan Pemasangan & Pembangunan (Getting Started)
 
-### Prasyarat
+### Akses Terus Tanpa Pemasangan (Instant Live Testing)
+Pengguna atau penilai boleh terus mengakses dan menguji aplikasi secara langsung melalui pelayan Cloud:
+- **URL Pengujian Langsung**: **[https://ai.studio/apps/24c69876-c911-4f00-8ca4-fb6fad8ca809](https://ai.studio/apps/24c69876-c911-4f00-8ca4-fb6fad8ca809)**
+- **Akaun Ujian**: `Internship@mediaprima.com.my` | **Kata Laluan**: `Internship123`
+
+---
+
+### Pemasangan Lokal (Local Development)
 - Node.js (v20 atau terkini)
 - npm atau bun
 
