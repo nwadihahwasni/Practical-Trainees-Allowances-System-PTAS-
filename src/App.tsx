@@ -16,6 +16,8 @@ import { SendReminderModal } from './components/Modals/SendReminderModal';
 import { RemarksModal } from './components/Modals/RemarksModal';
 import { HelpModal } from './components/Modals/HelpModal';
 import { CloudLinksModal } from './components/Modals/CloudLinksModal';
+import { ChangePasswordModal } from './components/Modals/ChangePasswordModal';
+import { LoginPage } from './components/Auth/LoginPage';
 import {
   ensureAuth,
   testConnection,
@@ -29,6 +31,8 @@ import {
   subscribeToLinks,
   saveLinkToFirestore,
   deleteLinkFromFirestore,
+  getHRAuthSession,
+  logoutHR,
   INITIAL_CLOUD_LINKS,
 } from './firebase';
 
@@ -89,6 +93,10 @@ export default function App() {
     };
   }, []);
 
+  // Authentication state for exclusive HR Internship user
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => !!getHRAuthSession());
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingIntern, setEditingIntern] = useState<Intern | null>(null);
@@ -106,6 +114,14 @@ export default function App() {
     setTimeout(() => {
       setToast(null);
     }, 3200);
+  };
+
+  const handleLogout = async () => {
+    if (window.confirm('Adakah anda pasti ingin log keluar dari sistem PTAS?')) {
+      await logoutHR();
+      setIsAuthenticated(false);
+      showToast('Log keluar berjaya. Sesi ditamatkan.', 'logout');
+    }
   };
 
   // CRUD Handlers with Firestore Persistence
@@ -196,6 +212,18 @@ export default function App() {
     showToast(`Focused on ${entityCode} payroll allowance sheet`, 'open_in_new');
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-surface-container-low">
+        <LoginPage
+          onLoginSuccess={() => setIsAuthenticated(true)}
+          showToast={showToast}
+        />
+        <Toast toast={toast} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary selection:text-white">
       {/* Primary Corporate Navigation Bar */}
@@ -210,6 +238,8 @@ export default function App() {
         setSelectedMonth={setSelectedMonth}
         onOpenHelp={() => setIsHelpOpen(true)}
         onOpenCloudLinks={() => setIsCloudLinksModalOpen(true)}
+        onOpenChangePassword={() => setIsChangePasswordOpen(true)}
+        onLogout={handleLogout}
         cloudLinksCount={links.length}
         isCloudConnected={isCloudConnected}
       />
@@ -306,6 +336,12 @@ export default function App() {
       />
 
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+        showToast={showToast}
+      />
 
       {/* Floating Operational Toast */}
       <Toast toast={toast} />

@@ -13,6 +13,8 @@ interface HeaderProps {
   setSelectedMonth: (month: number) => void;
   onOpenHelp: () => void;
   onOpenCloudLinks: () => void;
+  onOpenChangePassword: () => void;
+  onLogout: () => void;
   cloudLinksCount: number;
   isCloudConnected: boolean;
 }
@@ -28,9 +30,25 @@ export const Header: React.FC<HeaderProps> = ({
   setSelectedMonth,
   onOpenHelp,
   onOpenCloudLinks,
+  onOpenChangePassword,
+  onLogout,
   cloudLinksCount,
   isCloudConnected,
 }) => {
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = React.useState(false);
+  const profileMenuRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -131,20 +149,78 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="material-symbols-outlined text-[20px]">help_outline</span>
           </button>
 
-          <div className="flex items-center gap-2 pl-3 py-1 pr-1.5 bg-surface-container-low rounded-full border border-surface-container-high/60">
-            <div className="flex flex-col text-right">
-              <div className="flex items-center justify-end gap-1.5">
-                <span className="font-label-md text-label-md text-on-surface font-medium">HR Admin Ops</span>
-                <span
-                  className="inline-block w-2 h-2 rounded-full bg-tertiary-container ring-2 ring-surface-container-lowest animate-pulse"
-                  title="Active Secure Session"
-                />
+          {/* Exclusive HR Internship Profile Pill & Dropdown */}
+          <div className="relative" ref={profileMenuRef}>
+            <button
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              className="flex items-center gap-2 pl-3 py-1 pr-1.5 bg-surface-container-low hover:bg-surface-container-high rounded-full border border-surface-container-high/60 transition-all cursor-pointer shadow-2xs"
+              title="Profil Pengguna: HR Internship"
+            >
+              <div className="flex flex-col text-right">
+                <div className="flex items-center justify-end gap-1.5">
+                  <span className="font-label-md text-label-md text-on-surface font-semibold text-[12px]">HR Internship</span>
+                  <span
+                    className="inline-block w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-surface-container-lowest animate-pulse"
+                    title="Akaun HR Internship Aktif"
+                  />
+                </div>
+                <span className="font-label-sm text-[10px] text-secondary font-mono">Internship@mediaprima.com.my</span>
               </div>
-              <span className="font-label-sm text-[10px] text-secondary">Media Prima Berhad</span>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-xs shadow-xs">
-              <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
-            </div>
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-xs shadow-xs">
+                <span className="material-symbols-outlined text-on-primary text-[18px]">admin_panel_settings</span>
+              </div>
+            </button>
+
+            {/* Dropdown Menu */}
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 top-12 w-64 bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-2 border-b border-surface-container-high/60 mb-1">
+                  <span className="text-[10px] text-secondary uppercase font-semibold block">Akaun Pengguna Sah</span>
+                  <span className="font-semibold text-[13px] text-on-surface block">HR Internship</span>
+                  <span className="font-mono text-[11px] text-secondary truncate block">Internship@mediaprima.com.my</span>
+                  <span className="inline-block mt-1 text-[10px] bg-red-50 text-primary border border-red-200 px-1.5 py-0.2 rounded font-bold">
+                    Akses Pentadbir Tunggal
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <button
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      onOpenChangePassword();
+                    }}
+                    className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[17px] text-tertiary">lock_reset</span>
+                    <span>Tukar Kata Laluan</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      onOpenCloudLinks();
+                    }}
+                    className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[17px] text-secondary">cloud_sync</span>
+                    <span>Pusat Link &amp; Dokumen</span>
+                  </button>
+
+                  <div className="border-t border-surface-container-high/60 my-1" />
+
+                  <button
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      onLogout();
+                    }}
+                    className="w-full px-3 py-2 rounded-lg text-left text-[12px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[17px]">logout</span>
+                    <span>Log Keluar</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

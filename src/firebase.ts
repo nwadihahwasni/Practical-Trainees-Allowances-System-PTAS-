@@ -9,7 +9,17 @@ import {
   deleteDoc,
   onSnapshot,
 } from 'firebase/firestore';
-import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged,
+  User,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updatePassword,
+  signOut,
+} from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 import { Intern, CloudLink } from './types';
 import { INITIAL_INTERNS, DEFAULT_DEPARTMENTS, DEFAULT_BANKS } from './data/initialData';
@@ -348,4 +358,218 @@ export async function deleteLinkFromFirestore(id: string): Promise<void> {
     handleFirestoreError(error, OperationType.DELETE, path);
   }
 }
+
+// -------------------------------------------------------------
+// HR INTERNSHIP EXCLUSIVE AUTHENTICATION SYSTEM
+// Single Authorized User: HR Internship (Internship@mediaprima.com.my)
+// Initial Password: Internship123 (Changeable & linked to email for reset)
+// -------------------------------------------------------------
+
+export const AUTHORIZED_HR_EMAIL = 'Internship@mediaprima.com.my';
+export const DEFAULT_HR_PASSWORD = 'Internship123';
+export const HR_ROLE_NAME = 'HR Internship';
+
+const STORAGE_KEY_AUTH_USER = 'ptas_hr_auth_session';
+const STORAGE_KEY_CUSTOM_PASSWORD = 'ptas_hr_custom_password';
+
+/**
+ * Returns current effective password for HR Internship
+ */
+export function getEffectiveHRPassword(): string {
+  try {
+    const custom = localStorage.getItem(STORAGE_KEY_CUSTOM_PASSWORD);
+    if (custom && custom.length >= 6) {
+      return custom;
+    }
+  } catch (e) {
+    console.error('Error reading custom password', e);
+  }
+  return DEFAULT_HR_PASSWORD;
+}
+
+/**
+ * Checks if HR Internship is currently logged in
+ */
+export function getHRAuthSession(): { email: string; role: string; name: string } | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_AUTH_USER);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.email) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Error reading auth session', e);
+  }
+  return null;
+}
+
+/**
+ * Logs in the exclusive HR Internship user
+ */
+export async function loginHR(
+  emailInput: string,
+  passwordInput: string
+): Promise<{ success: boolean; message: string }> {
+  const normalizedEmail = emailInput.trim().toLowerCase();
+  const authorizedNormalized = AUTHORIZED_HR_EMAIL.toLowerCase();
+
+  // Strict single user check
+  if (normalizedEmail !== authorizedNormalized) {
+    return {
+      success: false,
+      message: `Akaun tidak dibenarkan. Sistem ini hanya membenarkan log masuk bagi HR Internship (${AUTHORIZED_HR_EMAIL}).`,
+    };
+  }
+
+  const expectedPassword = getEffectiveHRPassword();
+
+  if (passwordInput !== expectedPassword) {
+    return {
+      success: false,
+      message: 'Kata laluan tidak sah. Sila masukkan kata laluan yang betul atau gunakan fungsi "Lupa Kata Laluan".',
+    };
+  }
+
+  // Attempt Firebase Auth sign-in or create user in background
+  try {
+    if (auth.currentUser?.isAnonymous) {
+      // User is anonymous, attempt email login
+      try {
+        await signInWithEmailAndPassword(auth, AUTHORIZED_HR_EMAIL, passwordInput);
+      } catch (signInErr: any) {
+        if (signInErr?.code === 'auth/user-not-found') {
+          await createUserWithEmailAndPassword(auth, AUTHORIZED_HR_EMAIL, passwordInput);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Firebase email auth background sync notice:', e);
+  }
+
+  // Store active session
+  const session = {
+    email: AUTHORIZED_HR_EMAIL,
+    role: HR_ROLE_NAME,
+    name: 'HR Internship Admin',
+    loggedInAt: new Date().toISOString(),
+  };
+  localStorage.setItem(STORAGE_KEY_AUTH_USER, JSON.stringify(session));
+
+  return {
+    success: true,
+    message: 'Log masuk berjaya sebagai HR Internship.',
+  };
+}
+
+/**
+ * Logs out HR Internship
+ */
+export async function logoutHR(): Promise<void> {
+  try {
+    localStorage.removeItem(STORAGE_KEY_AUTH_USER);
+    await signOut(auth);
+  } catch (e) {
+    console.error('Error logging out', e);
+  }
+}
+
+/**
+ * Changes password for HR Internship
+ */
+export async function changePasswordHR(
+  currentPassword: string,
+  newPassword: string
+): Promise<{ success: boolean; message: string }> {
+  const expectedPassword = getEffectiveHRPassword();
+
+  if (currentPassword !== expectedPassword) {
+    return {
+      success: false,
+      message: 'Kata laluan semasa tidak tepat. Sila semak semula.',
+    };
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return {
+      success: false,
+      message: 'Kata laluan baharu mestilah mengandungi sekurang-kurangnya 6 aksara.',
+    };
+  }
+
+  // Save new password locally
+  localStorage.setItem(STORAGE_KEY_CUSTOM_PASSWORD, newPassword);
+
+  // Sync to Firebase Auth if user is authenticated with email
+  try {
+    if (auth.currentUser && !auth.currentUser.isAnonymous) {
+      await updatePassword(auth.currentUser, newPassword);
+    }
+  } catch (e) {
+    console.warn('Firebase Auth update password notice:', e);
+  }
+
+  // Also backup to config in Firestore
+  try {
+    await setDoc(doc(db, 'config', 'auth_policy'), {
+      account: AUTHORIZED_HR_EMAIL,
+      role: HR_ROLE_NAME,
+      updatedAt: new Date().toISOString(),
+      updatedBy: 'HR Internship Admin',
+    });
+  } catch (e) {
+    console.warn('Firestore auth config sync notice:', e);
+  }
+
+  return {
+    success: true,
+    message: `Kata laluan bagi ${AUTHORIZED_HR_EMAIL} telah berjaya ditukar! Sila gunakan kata laluan baharu pada log masuk seterusnya.`,
+  };
+}
+
+/**
+ * Sends Password Reset link and resets password linked to Internship@mediaprima.com.my
+ */
+export async function resetPasswordHR(
+  targetEmail: string,
+  newResetPassword?: string
+): Promise<{ success: boolean; message: string; defaultRestored?: boolean }> {
+  const normalized = targetEmail.trim().toLowerCase();
+  if (normalized !== AUTHORIZED_HR_EMAIL.toLowerCase()) {
+    return {
+      success: false,
+      message: `Pautan reset hanya boleh dipautkan kepada emel rasmi ${AUTHORIZED_HR_EMAIL}.`,
+    };
+  }
+
+  // Trigger official Firebase password reset email
+  let firebaseEmailSent = false;
+  try {
+    await sendPasswordResetEmail(auth, AUTHORIZED_HR_EMAIL);
+    firebaseEmailSent = true;
+  } catch (e) {
+    console.warn('Firebase sendPasswordResetEmail notice:', e);
+  }
+
+  if (newResetPassword && newResetPassword.length >= 6) {
+    localStorage.setItem(STORAGE_KEY_CUSTOM_PASSWORD, newResetPassword);
+    return {
+      success: true,
+      message: `Kata laluan telah ditetapkan semula kepada "${newResetPassword}". Pengesahan dipautkan ke ${AUTHORIZED_HR_EMAIL}.`,
+    };
+  }
+
+  // Reset back to initial default password Internship123
+  localStorage.removeItem(STORAGE_KEY_CUSTOM_PASSWORD);
+
+  return {
+    success: true,
+    defaultRestored: true,
+    message: firebaseEmailSent
+      ? `Pautan penetapan semula kata laluan telah dihantar ke ${AUTHORIZED_HR_EMAIL}. Kata laluan sandaran lalai (${DEFAULT_HR_PASSWORD}) telah diaktifkan semula.`
+      : `Pautan reset dipautkan ke emel ${AUTHORIZED_HR_EMAIL}. Kata laluan lalai rasmi (${DEFAULT_HR_PASSWORD}) telah diaktifkan semula untuk akses segera.`,
+  };
+}
+
 

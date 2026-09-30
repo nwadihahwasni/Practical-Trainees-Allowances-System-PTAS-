@@ -95,6 +95,14 @@ Aplikasi ini menyokong penapisan dan pemantauan merentasi seluruh anak syarikat 
 - Menyimpan pautan Google Drive, fail laporan penggajian, pautan portal Maybank Corporate Autopay, dan dokumen statutori terus ke Cloud Firestore.
 - Menyokong simpanan pautan terus pada profil setiap pelatih untuk semakan pantas resume, surat tawaran, atau folder Google Drive.
 
+### F10: Sistem Log Masuk Pengguna Tunggal (HR Internship) & Kawalan Kata Laluan
+- **Akaun Pengguna Sah Tunggal**: Hanya satu pengguna dibenarkan mengakses sistem iaitu **HR Internship** (`Internship@mediaprima.com.my`). Sebarang percubaan menggunakan emel lain akan disekat dengan ralat akses.
+- **Kredensial Rasmi**:
+  - **Emel**: `Internship@mediaprima.com.my`
+  - **Kata Laluan Asal (Default)**: `Internship123`
+- **Fungsi Tukar Kata Laluan (*Change Password*)**: Pengguna boleh menukar kata laluan pada menu profil header dengan memasukkan kata laluan semasa dan kata laluan baharu (minimum 6 aksara).
+- **Fungsi Reset Kata Laluan (*Forgot / Reset Password*)**: Dipautkan secara khusus ke emel rasmi `Internship@mediaprima.com.my`. Menyokong penghantaran pautan e-mel rasmi Firebase Authentication, penetapan semula segera, atau pengaktifan semula kata laluan sandaran lalai.
+
 ---
 
 ## 4. Senibina & Integrasi Firebase (Firebase Cloud Architecture)
