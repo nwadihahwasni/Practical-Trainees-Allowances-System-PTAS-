@@ -1,0 +1,6 @@
+{
+  "name": "Practical Trainee Allowance System (PTAS)",
+  "description": "Automate intern allowances, strict IC and banking validation, offboarding document tracking, and executive analytics across 11 Media Prima Berhad entities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
